@@ -39,6 +39,7 @@ ip dhcp pool vlan10
 !#ipasok d1 port e1/0 sa vlan 200
 config t
 int e1/0
+  DESCRIPTION DNSSERVER_S1
    switchport mode access
    switchport access vlan 200
    do show vlan brief
@@ -55,6 +56,7 @@ ip dhcp pool vlan10
 !#ipasok D2 port e1/0 sa vlan 20
 config t
 int e1/0
+   description webserver_s2
    switchport mode access
    switchport access vlan 20
    do show vlan brief
@@ -85,8 +87,8 @@ int e0/0
  no shut
 P1: Creating STATIC routes on p1 for vlan 200 and vlan 20:
 config t
-ip route  192.168.1.128 255.255.255.224 10.2.1.1 1
-ip route  192.168.1.130 255.255.255.255 10.2.1.2
+ip route 0.0.0.0 0.0.0.0 10.2.1.1 1
+ip route 0.0.0.0 0.0.0.0 10.2.1.2 2
 do sh ip route static
 p2:
 config t
@@ -96,8 +98,8 @@ int e1/0
 P2: create static route for vlan 200 and a 
 longest prefix rule for 192.168.1.129 GATEWAY of 10.2.1.1
 config t
-ip route  192.168.1.128 255.255.255.224 10.2.1.2
-ip route  192.168.1.129 255.255.255.255 10.2.1.1
+ip route 0.0.0.0 0.0.0.0 10.2.1.2 1
+ip route 0.0.0.0 0.0.0.0 10.2.1.1 2
 do sh ip route static
 Pano mag static Route sa PC:
 cmd
