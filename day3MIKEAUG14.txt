@@ -10,16 +10,16 @@ config t
 config t
 int e1/0
  no shut
- ip add 192.168.1.133 255.255.255.224
+ ip add 192.168.1.131 255.255.255.224
  do bp
- ip route 0.0.0.0 0.0.0.0 192.168.1.129 1
- ip route 0.0.0.0 0.0.0.0 192.168.1.130 2
+ ip route 0.0.0.0 0.0.0.0 192.168.1.130 1
+ ip route 0.0.0.0 0.0.0.0 192.168.1.129 2
  do sh ip route static
 @@S2
 config t
 int e1/0
  no shut
- ip add 10.2.2.133 255.255.255.0
+ ip add 10.2.2.132 255.255.255.0
  do bp
  ip route 0.0.0.0 0.0.0.0 10.2.2.2 1
  ip route 0.0.0.0 0.0.0.0 10.2.2.1 2
@@ -30,12 +30,13 @@ config t
  Task1: LoadBalacing DHCP Server:
  D1:
 CONFIG T
-ip dhcp excluded-add 10.2.1.1 10.2.1.99
+ip dhcp excluded-add 10.2.1.1 10.2.1.109
 ip dhcp excluded-add 10.2.1.200 10.2.1.254
 !
 ip dhcp pool vlan10
   network 10.2.1.0 255.255.255.0
   default-router 10.2.1.254
+!
 !#ipasok d1 port e1/0 sa vlan 200
 config t
 int e1/0
@@ -83,7 +84,7 @@ do sh ip route static
 p1:
 config t
 int e0/0
- ip add 10.2.1.101 255.255.255.0
+ ip add 10.2.1.111 255.255.255.0
  no shut
 P1: Creating STATIC routes on p1 for vlan 200 and vlan 20:
 config t
@@ -93,7 +94,7 @@ do sh ip route static
 p2:
 config t
 int e1/0
- ip add 10.2.1.102 255.255.255.0
+ ip add 10.2.1.122 255.255.255.0
  no shut
 P2: create static route for vlan 200 and a 
 longest prefix rule for 192.168.1.129 GATEWAY of 10.2.1.1
@@ -228,6 +229,7 @@ TASK9.3: BASIC eBGP FOR ISPS and R1.
 R1 BGP:
 config t
 router bgp 1
+bgp router-id 207.7.7.1
  bgp log-neighbor-changes
  neighbor 208.8.8.4 remote-as 45
  neighbor 207.7.7.2 remote-as 2
