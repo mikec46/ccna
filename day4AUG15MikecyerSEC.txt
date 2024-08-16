@@ -377,6 +377,8 @@ STEP2: create Access-list to permit IP of Inside:
 STEP3: create a NAT pool with overload
 @vpnPH:
 config t
+line vty 0 14
+exec-timeout 0 0
 int gi 1
 ip nat OUTSIDE
 int gi 2
@@ -384,11 +386,12 @@ ip nat INSIDE
 int gi 3
 ip nat INSIDE
 no access-list 7
+access-list 7 permit 20.20.20.0 0.0.0.255
 access-list 7 permit 192.168.102.0 0.0.0.255
-access-list 7 permit 192.168.103.0 0.0.0.255
 ip nat inside source list 7 interface Gi 1 overload
-ip nat inside source static 192.168.102.69 192.168.108.69
-ip nat inside source static 192.168.103.88 192.168.108.88
+! for VIPs
+ip nat inside source static 20.20.20.31 192.168.108.69
+ip nat inside source static 20.20.20.32 192.168.108.88
 end
 
 TASK10: DO YOU HAVE TO REPLACED BY A.I AT WORK? REPLACED BY
@@ -396,6 +399,15 @@ YOUNGER, SMARTER, CHEAPER NEW HIRES?? HOW TO BE UNTOUCHABLE EMPLOYEE?
 IF YOU WANT HAYUP/SIX DIGITS SWELDO/untouchable status.
 you need HAYUP/SIX DIGITS SWELDO Habits.
 
+Task 11: Config SSH/ Secure shell for encrypted traffic
+
+config t
+ip domain-name mike.com 
+!the private key generated will use mike.com 
+crypto key generate RSA
+! enable ssh and 3 minutes timeout 
+ip ssh version 2
+ip ssh time-out 120
 
 
 
