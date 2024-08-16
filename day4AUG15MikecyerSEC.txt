@@ -42,6 +42,42 @@ ip name-server 8.8.8.8
 ip domain-lookup
 ALL THE PORN SITES THE WORLD ARE OWNED BY 5 COMPANIES:
 
+Blocking porn sites myself using standard access list : 1-99
+config t
+no access-list 1 
+access-list 1 DENY 66.254.0.0 0.0.255.255
+access-list 1 DENY 104.21.0.0 0.0.255.255
+access-list 1 DENY 104.17.0.0 0.0.255.255
+access-list 1 DENY 88.208.0.0 0.0.255.255
+access-list 1 permit any
+int gi1
+ip access-group 1 in
+do show access-list 1
+
+opening the firewall
+config t
+int gi1
+no ip access-group 1 in
+do show access-list 1
+
+Blocking Government site 
+
+config t
+no access-list 2
+access-list 2 DENY 23.5.0.0 0.0.255.255
+access-list 2 DENY 104.16.0.0 0.0.255.255
+access-list 2 DENY 23.0.0.0 0.255.255.255
+access-list 2 DENY 136.0.0.0 0.255.255.255
+access-list 2 permit any
+int gi1
+ip access-group 2 in
+do show access-list 2
+
+
+
+
+
+
 config t
 NO ip access-list standard NOPORN1
 ip access-list standard NOPORN1
@@ -168,12 +204,12 @@ intentionally hackable websites
 task6: How to Make CUCM intentionally hackable to Learn
 the Basics for Firewalls.
 before: nmap -v 10.m.100.8
-@Cucm:
+@VPNPH
 config t
-int Gi 3
+int Gi 2
  no shut
- ip add 192.168.103.8 255.255.255.0
- ip add 192.168.103.9 255.255.255.0 Secondary
+ ip add 192.168.102.20 255.255.255.0
+ ip add 192.168.102.21 255.255.255.0 Secondary
 service finger
 service tcp-small-servers
 service udp-small-servers
@@ -181,8 +217,8 @@ ip dns server
 ip http server
 ip http secure-server
 !Make Ping EASY
-ip host www.web8.com 192.168.103.8
-ip host www.web9.com 192.168.103.9
+ ip host www.app1.com 192.168.102.20
+ ip host www.app2.com 192.168.102.21
 ip host pc 10.12.1.10
 ip host cm 10.12.100.8
 ip host cm2 10.12.100.9
@@ -234,6 +270,72 @@ Interface Gi 3
  ip access-group PROWEBAPP2 in
  do sh ip access-list PROWEBAPP1
 
+config t
+no ip access-list extended Policy1
+ip access-list extended Policy1
+Permit tcp any host www.app1.com eq 80 log
+Permit tcp any host www.app1.com eq 443 log
+Permit tcp any host www.app2.com eq 53 log
+Permit tcp any host www.app2.com eq 22 log
+Interface Gi 2
+ ip access-group Policy1 in
+ do sh ip access-list Policy1
+
+
+
+config t
+no ip access-list extended Policy2
+ip access-list extended Policy2
+Permit tcp any host www.app1.com eq 80 log
+Permit tcp any host www.app1.com eq 443 log
+Permit tcp any host www.app1.com eq 53 log
+Permit tcp any host www.app2.com eq 53 log
+Permit tcp any host www.app2.com eq 22 log
+Permit tcp any host www.app2.com eq 443 log
+Interface Gi 2
+ ip access-group Policy2 in
+ do sh ip access-list Policy2
+
+
+
+config t
+no ip access-list extended Policy3
+ip access-list extended Policy3
+Permit tcp any host www.app1.com eq 443 log
+Permit tcp any host www.app2.com eq 53 log
+Interface Gi 2
+ ip access-group Policy3 in
+ do sh ip access-list Policy3
+
+
+config t
+no ip access-list extended Policy4
+ip access-list extended Policy4
+Permit tcp any host www.app1.com eq 80 log
+Permit tcp any host www.app1.com eq 53 log
+Permit tcp any host www.app2.com eq 53 log
+Permit tcp any host www.app2.com eq 22 log
+Permit tcp any host www.app2.com eq 443 log
+Interface Gi 2
+ip access-group Policy4 in
+do sh ip access-list Policy4
+
+
+POLICYMIKE: APP1: ALLOW PING, 22, 443 AND APP2 ALLOW EVERYTHING 
+config t
+no ip access-list extended PolicyMIKE 
+ip access-list extended PolicyMIKE
+Permit icmp any host www.app1.com log
+Permit tcp any host www.app1.com eq 22 log
+Permit tcp any host www.app1.com eq 443 log
+Permit ip any host www.app2.com log
+Interface Gi 2
+ip access-group PolicyMIKE in
+do sh ip access-list PolicyMIKE
+
+
+
+
 EX.4 CREATE A FIREWALL POLICY NAMED PROWEBAPP4 TO OPEN
 WWW.WEB8.COM HAS ping, dns, https OPEN
 WWW.WEB9.COM HAS everything OPEN!
@@ -247,6 +349,8 @@ Permit IP any host www.web9.com
 Interface Gi 3
  ip access-group PROWEBAPP4 in
  do sh ip access-list PROWEBAPP4
+
+
 
 EX.5 CREATE A FIREWALL POLICY NAMED LASTFWP TO OPEN
 WWW.WEB8.COM HAS ping, chargen, finger, http as Open
